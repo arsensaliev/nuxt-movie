@@ -1,63 +1,58 @@
 <template>
-  <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">nuxt-movie</h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
+  <div class="movies">
+    <h1 class="movies__head">Popular</h1>
+    <div class="movies-list">
+      <movie-card
+        v-for="movie in movies"
+        :key="movie.id"
+        :movie="movie"
+        :genres="genres"
+        class="movies-list__item"
+      />
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+import MovieCard from '@/components/home/movieCard/MovieCard'
+import { fetchPopularMovies, fetchGenreMovies } from '@/requests/movies'
+export default {
+  components: { MovieCard },
+  async asyncData({ $axios }) {
+    const movies = await fetchPopularMovies($axios)
+    const genres = await fetchGenreMovies($axios)
+    return { movies, genres }
+  },
+}
 </script>
 
-<style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
+<style scoped>
+.movies {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  flex-direction: column;
+  padding: 50px 25px;
 }
 
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
+.movies__head {
+  font-weight: 400;
+  padding: 0;
+  margin: 0;
+  color: #191c1f;
 }
 
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
+.movies-list {
+  display: flex;
+  justify-content: space-between;
+  flex-flow: row wrap;
 }
 
-.links {
-  padding-top: 15px;
+.movies-list::after {
+  content: '';
+  flex: auto;
+}
+
+.movies-list__item {
+  margin-top: 50px;
+  width: 250px;
 }
 </style>
